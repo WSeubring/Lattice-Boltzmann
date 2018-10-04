@@ -58,7 +58,6 @@ print("{} {} {}".format(c[3],c[4],c[5]))
 ###### Function Definitions ####################################################
 sumpop = lambda fin: sum(fin, axis=0)  # Helper function for density computation.
 
-
 def equilibrium(rho, u):  # Equilibrium distribution function.
     cu = 3.0 * dot(c, u.transpose(1, 0, 2))
     usqr = 3. / 2. * (u[0] ** 2 + u[1] ** 2)
