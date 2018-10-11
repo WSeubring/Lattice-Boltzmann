@@ -91,14 +91,13 @@ for time in range(n_iterations):
     velocity[:, 0, :] = lattice_velocities[:, 0, :]  # Left wall: compute density from known populations.
     density[0, :] = 1. / (1. - velocity[0, 0, :]) * (sumpop(fin[vertical_direction_indexes, 0, :]) + 2. * sumpop(fin[left_direction_indexes, 0, :]))
 
-    #equilibrium_distribution = equilibrium(density, velocity)  # Left wall: Zou/He boundary condition.
-    fin[right_direction_indexes, 0, :] = fin[left_direction_indexes, 0, :] + equilibrium_distribution[right_direction_indexes, 0, :] - fin[left_direction_indexes, 0, :]
-
+    equilibrium_distribution = equilibrium(density, velocity)  # Left wall: Zou/He boundary condition.
+    #fin[right_direction_indexes, 0, :] = fin[left_direction_indexes, 0, :] + equilibrium_distribution[right_direction_indexes, 0, :] - fin[left_direction_indexes, 0, :]
+    fin[right_direction_indexes, 0, :] = equilibrium_distribution[right_direction_indexes, 0, :]
     fout = fin - relaxation_time * (fin - equilibrium_distribution)  # Collision step.
     for i in range(q): fout[i, obstacle] = fin[inverse_direction_indexes[i], obstacle]
-    #
-     for i in range(q):  # Streaming step.
-         fin[i, :, :] = roll(roll(fout[i, :, :], lattice_directions[i, 0], axis=0), lattice_directions[i, 1], axis=1)
+    for i in range(q):  # Streaming step.
+        fin[i, :, :] = roll(roll(fout[i, :, :], lattice_directions[i, 0], axis=0), lattice_directions[i, 1], axis=1)
 
     #   if (time % 100 == 0):  # Visualization
     plt.clf();
