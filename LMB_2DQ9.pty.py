@@ -39,7 +39,7 @@ D2Q9_SPEED = 1. / 3.
 lattice_directions = array([(x, y) for x in [0, -1, 1] for y in [0, -1, 1]])
 
 #Intit all weights to fast
-lattice_weights = D2Q9_FAST_WEIGHTING_VECTOR * ones(q)
+lattice_weights = D2Q9_FAST_WEIGHTING_VECTOR * ones(q) 
 
 #Init the xaxis and yaxis horizontal with slow weights
 lattice_weights[asarray([norm(direction) == 1. for direction in lattice_directions])] = D2Q9_SLOW_WEIGHTING_VECTOR;
@@ -91,7 +91,7 @@ for time in range(n_iterations):
     velocity[:, 0, :] = lattice_velocities[:, 0, :]  # Left wall: compute density from known populations.
     density[0, :] = 1. / (1. - velocity[0, 0, :]) * (sumpop(fin[vertical_direction_indexes, 0, :]) + 2. * sumpop(fin[left_direction_indexes, 0, :]))
 
-    equilibrium_distribution = equilibrium(density, velocity)  # Left wall: Zou/He boundary condition.
+    equilibrium_distribution = equilibrium(density, velocity)  # Left wall
     #fin[right_direction_indexes, 0, :] = fin[left_direction_indexes, 0, :] + equilibrium_distribution[right_direction_indexes, 0, :] - fin[left_direction_indexes, 0, :]
     fin[right_direction_indexes, 0, :] = equilibrium_distribution[right_direction_indexes, 0, :]
     fout = fin - relaxation_time * (fin - equilibrium_distribution)  # Collision step.
