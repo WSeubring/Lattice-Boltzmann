@@ -6,11 +6,11 @@ from matplotlib import cm
 #https://en.wikipedia.org/wiki/Reynolds_number
 # low == more smooth fluid | High == more chaotic and turbulantflow
 n_iterations = 20000  # Total number of time iterations.
-Reynolds_number = 220.0
+Reynolds_number = 4500.0
 water_density = 1.0
 
-plot_width = 400
-plot_height = 400
+plot_width = 250
+plot_height = 150
 
 ly = plot_height - 1.0 #TBD
 
@@ -81,7 +81,7 @@ obstacle = fromfunction(lambda x, y: (x - cylinder_x) ** 2 + (y - cylinder_y) **
 lattice_velocities = fromfunction(lambda d, x, y: (1 - d) * velocity_lattice_units * (1.0 + 1e-4 * sin(y / ly * 2 * pi)), (2, plot_width, plot_height))
 equilibrium_distribution = equilibrium(water_density, lattice_velocities)
 fin = equilibrium_distribution.copy()
-
+fig, ax = plt.subplots()
 ###### Main time loop ##########################################################
 for time in range(n_iterations):
     #fin[left_direction_indexes, -1, :] = fin[left_direction_indexes, -2, :]  # Right wall: outflow condition.
@@ -99,7 +99,34 @@ for time in range(n_iterations):
     for i in range(q):  # Streaming step.
         fin[i, :, :] = roll(roll(fout[i, :, :], lattice_directions[i, 0], axis=0), lattice_directions[i, 1], axis=1)
 
-    #   if (time % 100 == 0):  # Visualization
-    plt.clf();
-    plt.imshow(sqrt(velocity[0] ** 2 + velocity[1] ** 2).transpose(), cmap=cm.Reds)
-    plt.pause(0.001)
+    colorbar = False;
+
+    #if (time % 100 == 0):  # Visualization
+    if (time == 2000):
+        # fig, ax = plt.subplots()
+        # cax = plt.imshow(sqrt(velocity[0] ** 2 + velocity[1] ** 2).transpose(), cmap=cm.Reds)
+        # ax.set_title('Speed of single fluid using LBM. Step:{}'.format(time))
+        #
+        # cbar = fig.colorbar(cax, ticks=[-1, 0, 1], orientation='horizontal')
+        # cbar.ax.set_xticklabels(['Low', 'Medium', 'High'])  # horizontal colorbar
+        #
+        # cbar = fig.colorbar(cax, ticks=[-1, 0, 1])
+        # cbar.ax.set_yticklabels(['< -1', '0', '> 1'])  # vertically oriented colorbar
+        #
+        # plt.show()
+
+        fig, ax = plt.subplots()
+        data = sqrt(velocity[0] ** 2 + velocity[1] ** 2).transpose()
+
+        cax = ax.imshow(data, interpolation='nearest', cmap=cm.Reds)
+        ax.set_title('Velocity of single fluid using LBM. Re:{} Steps:{}'.format(Reynolds_number, time))
+
+        if (colorbar == False):
+            cbar = fig.colorbar(cax, ticks=[0.03999600, amax(velocity)], orientation='vertical')
+            cbar.ax.set_yticklabels(['Low', 'High'])  # horizontal colorbar
+            colorbar = True
+
+        plt.ylabel('y-nodes')
+        plt.xlabel('x-nodes')
+        plt.show()
+        #plt.pause(0.001)
