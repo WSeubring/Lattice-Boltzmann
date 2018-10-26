@@ -39,7 +39,7 @@ D2Q9_SPEED = 1. / 3.
 lattice_directions = array([(x, y) for x in [0, -1, 1] for y in [0, -1, 1]])
 
 #Intit all weights to fast
-lattice_weights = D2Q9_FAST_WEIGHTING_VECTOR * ones(q)
+lattice_weights = D2Q9_FAST_WEIGHTING_VECTOR * ones(q) 
 
 #Init the xaxis and yaxis horizontal with slow weights
 lattice_weights[asarray([norm(direction) == 1. for direction in lattice_directions])] = D2Q9_SLOW_WEIGHTING_VECTOR;
